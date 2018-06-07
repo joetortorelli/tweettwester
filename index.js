@@ -1,25 +1,31 @@
-const express = require('express')
-const path = require('path')
-const Twit = require('twit');
-const PORT = process.env.PORT || 5000
-let T = new Twit({
-  consumer_key:         'zKp2Zpr1V5AJomHLqazcIJP16',
-  consumer_secret:      'DhvLm0StrU348LcFIxH1PuC6VZY56eoSI6HbvUPVeSlus8fZVt',
-  access_token:         '469590520-Lz6vO06uVgfN1tPkm7fE2ZE6nfy26WgSChCyZYQQ',
-  access_token_secret:  'pls5Hx99FBLJFvBWI7sYvSTDEfndOFlyzteAQLAaK91q5',
-  timeout_ms:           60*1000,  // optional HTTP request timeout to apply to all requests.
-});
+const MongoClient = require('mongodb').MongoClient;
+const PubSub = require('@google-cloud/pubsub');
+const config = require('./config');
+const url = config.url;
+const dbName = config.db;
+const pubsub = new PubSub();
+const T = config.twit;
+
 express()
   .use(express.static(path.join(__dirname, 'public')))
   .set('views', path.join(__dirname, 'views'))
   .set('view engine', 'ejs')
   .get('/', (req, res) => { 
-    var stream = T.stream('statuses/filter', { track: '@UPS' })
-    T.get('search/tweets', { q: 'banana since:2011-07-11', count: 2 }, function(err, data, response) {
-     res.send(data);
-    })
-    stream.on('tweet', function (tweet) {
-      console.log(tweet.text)
-    })
+    MongoClient.connect(url, function(err, db) { 
+        var dbo = db.db(dbName);
+        var stream = T.stream('statuses/filter', { track: '@UPS' })
+        stream.on('tweet', function (e) {
+            console.log('storing and publishing the tweets: ' + e.id + ' : ' + e.text);
+            const dataBuffer = Buffer.from(JSON.stringify(e));
+            pubsub.topic('hackathon').publisher().publish(dataBuffer)
+            .then(messageId => { 
+                console.log(`Message ${messageId} published.`);
+                dbo.collection("savedTweets").insertOne(e, function(err, res) {
+                    console.log("1 document inserted: " + e.id + " - " + e.text);
+                });
+            })
+            .catch(err => { console.error('ERROR:', err); }); 
+        });
+    });
   })
   .listen(PORT, () => console.log(`Listening on ${ PORT }`))
