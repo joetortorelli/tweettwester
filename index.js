@@ -6,6 +6,8 @@ const url = config.url;
 const dbName = config.db;
 const pubsub = new PubSub();
 const T = config.twit;
+const path = require('path');
+const PORT = process.env.PORT || 5000
 
 express()
   .use(express.static(path.join(__dirname, 'public')))
