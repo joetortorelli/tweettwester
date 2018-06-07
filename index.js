@@ -26,6 +26,7 @@ express()
             })
             .catch(err => { console.error('ERROR:', err); }); 
         });
+        res.send('ahouy matey');
     });
   })
   .listen(PORT, () => console.log(`Listening on ${ PORT }`))
