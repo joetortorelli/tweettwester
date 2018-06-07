@@ -5,6 +5,7 @@ const config = require('./config');
 const url = config.url;
 const dbName = config.db;
 const pubsub = new PubSub({ 
+  projectId: process.env.project_id,
   credentials: {
     "type": process.env.type,
     "project_id": process.env.project_id,
