@@ -1,3 +1,4 @@
+const express = require('express');
 const MongoClient = require('mongodb').MongoClient;
 const PubSub = require('@google-cloud/pubsub');
 const config = require('./config');
@@ -11,6 +12,7 @@ express()
   .set('views', path.join(__dirname, 'views'))
   .set('view engine', 'ejs')
   .get('/', (req, res) => { 
+    console.log('test1');
     MongoClient.connect(url, function(err, db) { 
         var dbo = db.db(dbName);
         var stream = T.stream('statuses/filter', { track: '@UPS' })
