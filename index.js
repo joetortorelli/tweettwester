@@ -11,6 +11,13 @@ let T = new Twit({
   timeout_ms:           60*1000,  // optional HTTP request timeout to apply to all requests.
 });
 app.get('/', (req, res) => { 
-
+  var stream = T.stream('statuses/filter', { track: 'mango' })
+  T.get('search/tweets', { q: 'banana since:2011-07-11', count: 10 }, function(err, data, response) {
+    console.log(data)
+  })
+  stream.on('tweet', function (tweet) {
+    console.log(tweet)
+  })
+  
 })
 app.listen(PORT, () => console.log(`Listening on ${ PORT }`))
