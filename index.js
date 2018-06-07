@@ -14,12 +14,12 @@ express()
   .set('views', path.join(__dirname, 'views'))
   .set('view engine', 'ejs')
   .get('/', (req, res) => { 
-    var stream = T.stream('statuses/filter', { track: 'mango' })
-    T.get('search/tweets', { q: 'banana since:2011-07-11', count: 10 }, function(err, data, response) {
+    var stream = T.stream('statuses/filter', { track: '@UPS' })
+    T.get('search/tweets', { q: 'banana since:2011-07-11', count: 2 }, function(err, data, response) {
      res.send(data);
     })
     stream.on('tweet', function (tweet) {
-      console.log(tweet)
+      console.log(tweet.text)
     })
   })
   .listen(PORT, () => console.log(`Listening on ${ PORT }`))
