@@ -4,6 +4,9 @@ let config = {}
 
 config.url = process.env.url;
 config.db = process.env.db;
+config.tweetCollection = process.env.tweetCollection;
+config.analysisCollection = process.env.db;
+
 config.twit = new Twit({
     consumer_key:         process.env.consumer_key,
     consumer_secret:      process.env.consumer_secret,

@@ -24,26 +24,23 @@ const path = require('path');
 const PORT = process.env.PORT || 5000
 
 express()
-  .use(express.static(path.join(__dirname, 'public')))
-  .set('views', path.join(__dirname, 'views'))
-  .set('view engine', 'ejs')
   .get('/', (req, res) => { 
     MongoClient.connect(url, function(err, db) { 
-        var dbo = db.db('nlanalysis');
+        var dbo = db.db(config.analysisCollection);
         var stream = T.stream('statuses/filter', { track: '@UPS' })
         stream.on('tweet', function (e) {
-            console.log('storing and publishing the tweets: ' + e.id + ' : ' + e.text);
+            console.log('Publishing ' + e.id + ' to analysis service.');
             const dataBuffer = Buffer.from(JSON.stringify(e));
             pubsub.topic('hackathon').publisher().publish(dataBuffer)
             .then(messageId => { 
                 console.log(`Message ${messageId} published.`);
-                dbo.collection(config.db).insertOne(e, function(err, res) {
-                    console.log("1 document inserted into Tweets collection: " + e.id + " - " + e.text);
+                dbo.collection(config.tweetCollection).insertOne(e, function(err, res) {
+                    console.log('Inserted ' + e.text + ' into database.');
                 });
             })
             .catch(err => { console.error('ERROR:', err); }); 
         });
-        res.send('ahouy matey');
+        res.send('You should not be here :)');
     });
   })
   .listen(PORT, () => console.log(`Listening on ${ PORT }`))
