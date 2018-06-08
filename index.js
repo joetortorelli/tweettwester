@@ -29,7 +29,7 @@ express()
   .set('view engine', 'ejs')
   .get('/', (req, res) => { 
     MongoClient.connect(url, function(err, db) { 
-        var dbo = db.db(dbName);
+        var dbo = db.db('nlanalysis');
         var stream = T.stream('statuses/filter', { track: '@UPS' })
         stream.on('tweet', function (e) {
             console.log('storing and publishing the tweets: ' + e.id + ' : ' + e.text);
