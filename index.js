@@ -2,8 +2,10 @@ const express = require('express');
 const MongoClient = require('mongodb').MongoClient;
 const PubSub = require('@google-cloud/pubsub');
 const config = require('./config');
+var Filter = require('bad-words'),
 const url = config.url;
 const dbName = config.db;
+filter = new Filter();
 const pubsub = new PubSub({ 
   projectId: process.env.project_id,
   credentials: {
@@ -29,7 +31,9 @@ express()
         var dbo = db.db(config.analysisCollection);
         var stream = T.stream('statuses/filter', { track: '@UPS' })
         stream.on('tweet', function (e) {
-            console.log('Publishing ' + e.id + ' to analysis service.');
+            console.log('before: ' + e.text);
+            e.text = filter.clean(e.text);
+            console.log('after: ' + e.text);
             const dataBuffer = Buffer.from(JSON.stringify(e));
             pubsub.topic('hackathon').publisher().publish(dataBuffer)
             .then(messageId => { 
