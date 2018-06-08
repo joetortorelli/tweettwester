@@ -28,7 +28,6 @@ express()
   .set('views', path.join(__dirname, 'views'))
   .set('view engine', 'ejs')
   .get('/', (req, res) => { 
-    console.log('test1');
     MongoClient.connect(url, function(err, db) { 
         var dbo = db.db(dbName);
         var stream = T.stream('statuses/filter', { track: '@UPS' })
@@ -38,8 +37,8 @@ express()
             pubsub.topic('hackathon').publisher().publish(dataBuffer)
             .then(messageId => { 
                 console.log(`Message ${messageId} published.`);
-                dbo.collection("savedTweets").insertOne(e, function(err, res) {
-                    console.log("1 document inserted: " + e.id + " - " + e.text);
+                dbo.collection(url).insertOne(e, function(err, res) {
+                    console.log("1 document inserted into Tweets collection: " + e.id + " - " + e.text);
                 });
             })
             .catch(err => { console.error('ERROR:', err); }); 
