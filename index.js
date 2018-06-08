@@ -37,7 +37,7 @@ express()
             pubsub.topic('hackathon').publisher().publish(dataBuffer)
             .then(messageId => { 
                 console.log(`Message ${messageId} published.`);
-                dbo.collection(url).insertOne(e, function(err, res) {
+                dbo.collection(config.db).insertOne(e, function(err, res) {
                     console.log("1 document inserted into Tweets collection: " + e.id + " - " + e.text);
                 });
             })
