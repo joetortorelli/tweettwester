@@ -31,9 +31,9 @@ express()
         var dbo = db.db(config.analysisCollection);
         var stream = T.stream('statuses/filter', { track: '@UPS' })
         stream.on('tweet', function (e) {
-            console.log('before: ' + e.text);
+            console.log('test: ' + e.user.screen_name + '/status/' + e.id.toString());
+            e.id = e.id.toString();
             e.text = filter.clean(e.text);
-            console.log('after: ' + e.text);
             const dataBuffer = Buffer.from(JSON.stringify(e));
             pubsub.topic('hackathon').publisher().publish(dataBuffer)
             .then(messageId => { 
