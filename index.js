@@ -37,6 +37,7 @@ express()
             .then(messageId => { 
                 console.log(`Message ${messageId} published.`);
                 dbo.collection(config.tweetCollection).insertOne(e, function(err, res) {
+                  console.log('bump: ' + JSON.stringify(e));
                     console.log('Inserted ' + e.text + ' into database.');
                 });
             })
