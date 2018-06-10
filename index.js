@@ -1,11 +1,7 @@
 const express = require('express');
 const MongoClient = require('mongodb').MongoClient;
 const PubSub = require('@google-cloud/pubsub');
-const config = require('./config');
-var Filter = require('bad-words');
-const url = config.url;
-const dbName = config.db;
-filter = new Filter();
+const Filter = require('bad-words');
 const pubsub = new PubSub({ 
   projectId: process.env.project_id,
   credentials: {
@@ -21,23 +17,28 @@ const pubsub = new PubSub({
     "client_x509_cert_url": process.env.client_x509_cert_url
   }
 });
-const T = config.twit;
+const Twit = require('twit');
+const T = new Twit({
+    consumer_key:         process.env.consumer_key,
+    consumer_secret:      process.env.consumer_secret,
+    access_token:         process.env.access_token,
+    access_token_secret:  process.env.access_token_secret,
+    timeout_ms:           60*1000,  // optional HTTP request timeout to apply to all requests.
+});
 const path = require('path');
 const PORT = process.env.PORT || 5000
-
 express()
   .get('/' + process.env.hidden, (req, res) => { 
-    MongoClient.connect(url, function(err, db) { 
-        var dbo = db.db(config.analysisCollection);
+    MongoClient.connect(process.env.url, function(err, db) { 
+        var dbo = db.db(process.env.db);
         var stream = T.stream('statuses/filter', { track: '@UPS' })
         stream.on('tweet', function (e) {
+            filter = new Filter();
             e.text = filter.clean(e.text);
             const dataBuffer = Buffer.from(JSON.stringify(e));
             pubsub.topic('hackathon').publisher().publish(dataBuffer)
             .then(messageId => { 
-                console.log(`Message ${messageId} published.`);
-                dbo.collection(config.tweetCollection).insertOne(e, function(err, res) {
-                  console.log('bump: ' + JSON.stringify(e));
+                dbo.collection(process.env.tweetCollection).insertOne(e, function(err, res) {
                     console.log('Inserted ' + e.text + ' into database.');
                 });
             })
