@@ -41,7 +41,7 @@ express()
             })
             .catch(err => { console.error('ERROR:', err); }); 
         });
-        res.send('You should not be here :)');
+        res.send('You should not be her1e :)');
     });
   })
-  .listen(PORT, () => { console.log('just started!'); console.log(`Listening on ${ PORT }`) });
+  .listen(PORT, () => { console.log(`Listening on ${ PORT }`) });
