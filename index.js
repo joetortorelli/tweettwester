@@ -29,6 +29,7 @@ const path = require('path');
 const PORT = process.env.PORT || 5000
 express()
   .get('/' + process.env.hidden, (req, res) => { 
+      console.log('just started!');
     MongoClient.connect(process.env.url, function(err, db) { 
         var dbo = db.db(process.env.db);
         var stream = T.stream('statuses/filter', { track: '@UPS' })
