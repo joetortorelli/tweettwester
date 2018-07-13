@@ -38,7 +38,7 @@ express()
             const dataBuffer = Buffer.from(JSON.stringify(e));
             pubsub.topic('hackathon').publisher().publish(dataBuffer)
             .then(messageId => { 
-                if (e.text.includes(arr[i])) { 
+                if (filter.isProfane(e.text)) { 
                     console.log('threatening: ' + e.text);
                     dbo.collection('threats').insertOne(e, function(err, res) {
                         console.log('Inserted ' + e.text + ' into threat database.');
