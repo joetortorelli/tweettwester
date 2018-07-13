@@ -35,12 +35,13 @@ express()
         var dbo = db.db(process.env.db);
         var stream = T.stream('statuses/filter', { track: '@UPS' })
         stream.on('tweet', function (e) {
+            let originalText = e.text;
             e.text = filter.clean(e.text);
             console.log(e.text);
             const dataBuffer = Buffer.from(JSON.stringify(e));
             pubsub.topic('hackathon').publisher().publish(dataBuffer)
             .then(messageId => { 
-                if (filter.isProfane(e.text)) { 
+                if (filter.isProfane(originalText)) { 
                     console.log('threatening: ' + e.text);
                     dbo.collection('threats').insertOne(e, function(err, res) {
                         console.log('Inserted ' + e.text + ' into threat database.');
