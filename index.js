@@ -42,13 +42,16 @@ express()
                     console.log('threatening: ' + e.text);
                     dbo.collection('threats').insertOne(e, function(err, res) {
                         console.log('Inserted ' + e.text + ' into threat database.');
-                        e.text = filter.clean(e.text);
-                        dbo.collection(process.env.tweetCollection).insertOne(e, function(err, res) {
+
+                        let z = e;
+                        console.log('this bih: ' + filter.clean(z.text));
+                        z.text = filter.clean(z.text);
+                        console.log(z.text);
+                        dbo.collection(process.env.tweetCollection).insertOne(z, function(err, res) {
                             console.log('Inserted ' + e.text + ' into database.');
                         });
                     });
                 } else { 
-                    e.text = filter.clean(e.text);
                     dbo.collection(process.env.tweetCollection).insertOne(e, function(err, res) {
                         console.log('Inserted ' + e.text + ' into database.');
                     });
@@ -56,7 +59,7 @@ express()
             })
             .catch(err => { console.error('ERROR:', err); }); 
         });
-        res.send('You should not be her2e :)');
+        res.send('You should not be her4e :)');
     });
   })
   .listen(PORT, () => { console.log(`Listening on ${ PORT }`) });
