@@ -45,7 +45,7 @@ express()
                     console.log('threatening: ' + e.text);
                     dbo.collection('threats').insertOne(e, function(err, res) {
                         console.log('Inserted ' + e.text + ' into threat database.');
-                        dbo.collection(process.env.tweetCollection).insertOne(z, function(err, res) {
+                        dbo.collection(process.env.tweetCollection).insertOne(e, function(err, res) {
                             console.log('Inserted ' + e.text + ' into database.');
                         });
                     });
