@@ -35,6 +35,8 @@ express()
         var dbo = db.db(process.env.db);
         var stream = T.stream('statuses/filter', { track: '@UPS' })
         stream.on('tweet', function (e) {
+            e.text = filter.clean(e.text);
+            console.log(e.text);
             const dataBuffer = Buffer.from(JSON.stringify(e));
             pubsub.topic('hackathon').publisher().publish(dataBuffer)
             .then(messageId => { 
@@ -42,11 +44,6 @@ express()
                     console.log('threatening: ' + e.text);
                     dbo.collection('threats').insertOne(e, function(err, res) {
                         console.log('Inserted ' + e.text + ' into threat database.');
-
-                        let z = e;
-                        console.log('this bih: ' + filter.clean(z.text));
-                        z.text = filter.clean(z.text);
-                        console.log(z.text);
                         dbo.collection(process.env.tweetCollection).insertOne(z, function(err, res) {
                             console.log('Inserted ' + e.text + ' into database.');
                         });
