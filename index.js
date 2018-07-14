@@ -1,4 +1,5 @@
 const express = require('express');
+var os = require("os");
 const MongoClient = require('mongodb').MongoClient;
 const PubSub = require('@google-cloud/pubsub');
 const pubsub = new PubSub({ 
@@ -42,15 +43,16 @@ express()
             pubsub.topic('hackathon').publisher().publish(dataBuffer)
             .then(messageId => { 
                 if (filter.isProfane(originalText)) { 
-                    console.log('threatening: ' + e.text);
                     dbo.collection('threats').insertOne(e, function(err, res) {
-                        console.log('Inserted ' + e.text + ' into threat database.');
+                        logThisBih("Inserting (Threat): " + e.text);
                         dbo.collection(process.env.tweetCollection).insertOne(e, function(err, res) {
                             console.log('Inserted ' + e.text + ' into database.');
+                            logThisBih("Inserting: " + e.text);
                         });
                     });
                 } else { 
                     dbo.collection(process.env.tweetCollection).insertOne(e, function(err, res) {
+                        logThisBih("Inserting: " + e.text);
                         console.log('Inserted ' + e.text + ' into database.');
                     });
                 }
@@ -61,3 +63,13 @@ express()
     });
   })
   .listen(PORT, () => { console.log(`Listening on ${ PORT }`) });
+
+var logThisBih = (text) => {
+  fs.open('./logs.txt', 'a', 666, function( e, id ) {
+   fs.write( id, text + os.EOL, null, 'utf8', function(){
+    fs.close(id, function(){
+     console.log('file is updated');
+    });
+   });
+  });
+ }
