@@ -2,6 +2,7 @@ const express = require('express');
 var os = require("os");
 const MongoClient = require('mongodb').MongoClient;
 const PubSub = require('@google-cloud/pubsub');
+var fs = require('fs');
 const pubsub = new PubSub({ 
   projectId: process.env.project_id,
   credentials: {
