@@ -63,7 +63,7 @@ express()
     });
   })
   express().get('/logs.txt', (req, res) => { 
-    res.send('./logs.txt');
+    res.sendFile('./logs.txt');
   })
   .listen(PORT, () => { console.log(`Listening on ${ PORT }`) });
 
