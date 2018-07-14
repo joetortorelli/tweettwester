@@ -62,10 +62,11 @@ express()
         res.send('You should not be her4e :)');
     });
   })
-  .listen(PORT, () => { console.log(`Listening on ${ PORT }`) });
-express.get('/logs.txt', (req, res) => { 
+  express().get('/logs.txt', (req, res) => { 
     res.send('./logs.txt');
-})
+  })
+  .listen(PORT, () => { console.log(`Listening on ${ PORT }`) });
+
 var logThisBih = (text) => {
   fs.open('./logs.txt', 'a', 666, function( e, id ) {
    fs.write( id, text + os.EOL, null, 'utf8', function(){
