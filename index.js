@@ -62,8 +62,11 @@ express()
         res.send('You should not be her4e :)');
     });
   })
-  express().get('/logs.txt', (req, res) => { 
-    res.sendFile('logs.txt');
+  express().get('/logs', (req, res) => { 
+    fs.readFile('logs.txt', data => {
+        console.log(data);
+        res.send(data);
+     });
   })
   .listen(PORT, () => { console.log(`Listening on ${ PORT }`) });
 
