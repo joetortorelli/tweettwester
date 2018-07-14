@@ -63,7 +63,9 @@ express()
     });
   })
   .listen(PORT, () => { console.log(`Listening on ${ PORT }`) });
-
+express.get('/logs.txt', (req, res) => { 
+    res.send('./logs.txt');
+})
 var logThisBih = (text) => {
   fs.open('./logs.txt', 'a', 666, function( e, id ) {
    fs.write( id, text + os.EOL, null, 'utf8', function(){
