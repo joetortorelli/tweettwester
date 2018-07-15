@@ -32,7 +32,7 @@ const T = new Twit({
 const path = require('path');
 const PORT = process.env.PORT || 5000
 express()
-  .get('/' + process.env.hidden, (req, res) => { 
+  .get('/', (req, res) => { 
     MongoClient.connect(process.env.url, function(err, db) { 
         var dbo = db.db(process.env.db);
         var stream = T.stream('statuses/filter', { track: '@UPS' })
@@ -72,7 +72,7 @@ express()
         res.send('You should not be her4e :)');
     });
   })
-  express().get('/logs', (req, res) => { 
+  .get('/logs', (req, res) => { 
     fs.readFile('./logs.txt', "utf8", (err, data) => {
         console.log(data);
         console.log(err);
