@@ -64,8 +64,10 @@ express()
     });
   })
   express().get('/logs', (req, res) => { 
-    fs.readFile('./logs.txt', data => {
+    fs.readFile('./logs.txt', (err, data) => {
         console.log(data);
+        console.log(err);
+
         res.send(data);
      });
   })
