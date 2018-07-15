@@ -73,7 +73,7 @@ express()
     });
   })
   express().get('/logs', (req, res) => { 
-    fs.readFile('./logs.txt', (err, data) => {
+    fs.readFile('./logs.txt', "utf8", (err, data) => {
         console.log(data);
         console.log(err);
 
