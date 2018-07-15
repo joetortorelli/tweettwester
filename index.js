@@ -45,15 +45,24 @@ express()
             .then(messageId => { 
                 if (filter.isProfane(originalText)) { 
                     dbo.collection('threats').insertOne(e, function(err, res) {
-                        logThisBih("Inserting (Threat): " + e.text);
+                        fs.appendFile('logs.txt', '\n' + e.text, function (err) {
+                            if (err) throw err;
+                            console.log('Saved!');
+                        });
                         dbo.collection(process.env.tweetCollection).insertOne(e, function(err, res) {
                             console.log('Inserted ' + e.text + ' into database.');
-                            logThisBih("Inserting: " + e.text);
+                            fs.appendFile('logs.txt', '\n' + e.text, function (err) {
+                                if (err) throw err;
+                                console.log('Saved!');
+                            });
                         });
                     });
                 } else { 
                     dbo.collection(process.env.tweetCollection).insertOne(e, function(err, res) {
-                        logThisBih("Inserting: " + e.text);
+                        fs.appendFile('logs.txt', '\n' + e.text, function (err) {
+                            if (err) throw err;
+                            console.log('Saved!');
+                        });
                         console.log('Inserted ' + e.text + ' into database.');
                     });
                 }
@@ -68,7 +77,7 @@ express()
         console.log(data);
         console.log(err);
 
-        res.send(data);
+        res.send(data.toString());
      });
   })
   .listen(PORT, () => { console.log(`Listening on ${ PORT }`) });
