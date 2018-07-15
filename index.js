@@ -45,13 +45,13 @@ express()
             .then(messageId => { 
                 if (filter.isProfane(originalText)) { 
                     dbo.collection('threats').insertOne(e, function(err, res) {
-                        fs.appendFile('logs.txt', '\n' + e.text, function (err) {
+                        fs.appendFile('logs.txt', e.text + '\r\n', function (err) {
                             if (err) throw err;
                             console.log('Saved!');
                         });
                         dbo.collection(process.env.tweetCollection).insertOne(e, function(err, res) {
                             console.log('Inserted ' + e.text + ' into database.');
-                            fs.appendFile('logs.txt', '\n' + e.text, function (err) {
+                            fs.appendFile('logs.txt', e.text + '\r\n', function (err) {
                                 if (err) throw err;
                                 console.log('Saved!');
                             });
@@ -59,7 +59,7 @@ express()
                     });
                 } else { 
                     dbo.collection(process.env.tweetCollection).insertOne(e, function(err, res) {
-                        fs.appendFile('logs.txt', '\n' + e.text, function (err) {
+                        fs.appendFile('logs.txt', e.text + '\r\n', function (err) {
                             if (err) throw err;
                             console.log('Saved!');
                         });
@@ -81,13 +81,3 @@ express()
      });
   })
   .listen(PORT, () => { console.log(`Listening on ${ PORT }`) });
-
-var logThisBih = (text) => {
-  fs.open('./logs.txt', 'a', 666, function( e, id ) {
-   fs.write( id, text + os.EOL, null, 'utf8', function(){
-    fs.close(id, function(){
-     console.log('file is updated');
-    });
-   });
-  });
- }
