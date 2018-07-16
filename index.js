@@ -31,48 +31,50 @@ const T = new Twit({
 });
 const path = require('path');
 const PORT = process.env.PORT || 5000
-express()
-    .get('/', (req, res) => { 
+express().get('/' + process.env.hidden, (req, res) => { 
     MongoClient.connect(process.env.url, function(err, db) { 
         var dbo = db.db(process.env.db);
         var stream = T.stream('statuses/filter', { track: '@UPS' })
         stream.on('tweet', function (e) {
-            let originalText = e.text;
-            e.text = filter.clean(e.text);
-            console.log(e.text);
-            const dataBuffer = Buffer.from(JSON.stringify(e));
-            pubsub.topic('hackathon').publisher().publish(dataBuffer)
-            .then(messageId => { 
-                if (filter.isProfane(originalText)) { 
-                    dbo.collection('threats').insertOne(e, function(err, res) {
-                        fs.appendFile('logs.txt', e.text + '\r\n', function (err) {
-                            if (err) throw err;
-                            console.log('Saved!');
-                        });
-                        dbo.collection(process.env.tweetCollection).insertOne(e, function(err, res) {
-                            console.log('Inserted ' + e.text + ' into database.');
-                            fs.appendFile('logs.txt', e.text + '\r\n', function (err) {
-                                if (err) throw err;
-                                console.log('Saved!');
+            dbo.collection(process.env.tweetCollection).findOne({ "text" : e.text }, (err, doIExist) => {
+                if (doIExist) {
+                    let originalText = e.text;
+                    e.text = filter.clean(e.text);
+                    const dataBuffer = Buffer.from(JSON.stringify(e));
+                    pubsub.topic('hackathon').publisher().publish(dataBuffer)
+                    .then(messageId => { 
+                        if (filter.isProfane(originalText)) { 
+                            dbo.collection('threats').insertOne(e, function(err, res) {
+                                fs.appendFile('logs.txt', e.text + '\r\n', function (err) {
+                                    if (err) throw err;
+                                    console.log('Saved!');
+                                });
+                                dbo.collection(process.env.tweetCollection).insertOne(e, function(err, res) {
+                                    console.log('Inserted ' + e.text + ' into database.');
+                                    fs.appendFile('logs.txt', e.text + '\r\n', function (err) {
+                                        if (err) throw err;
+                                        console.log('Saved!');
+                                    });
+                                });
                             });
-                        });
-                    });
-                } else { 
-                    dbo.collection(process.env.tweetCollection).insertOne(e, function(err, res) {
-                        fs.appendFile('logs.txt', e.text + '\r\n', function (err) {
-                            if (err) throw err;
-                            console.log('Saved!');
-                        });
-                        console.log('Inserted ' + e.text + ' into database.');
-                    });
-                }
-            })
-            .catch(err => { console.error('ERROR:', err); }); 
+                        } else { 
+                            dbo.collection(process.env.tweetCollection).insertOne(e, function(err, res) {
+                                fs.appendFile('logs.txt', e.text + '\r\n', function (err) {
+                                    if (err) throw err;
+                                    console.log('Saved!');
+                                });
+                                console.log('Inserted ' + e.text + ' into database.');
+                            });
+                        }
+                    })
+                    .catch(err => { console.error('ERROR:', err); }); 
+                } else {}
+            });
         });
         res.send('You should not be her4e :)');
     });
-  })
-  .get('/logs', (req, res) => { 
+})
+.get('/logs', (req, res) => { 
     // fs.readFile('./logs.txt', "utf8", (err, data) => {
     //     console.log(data);
     //     console.log(err);
@@ -88,5 +90,5 @@ express()
             res.send(JSON.stringify(result));
         });
     });
-  })
-  .listen(PORT, () => { console.log(`Listening on ${ PORT }`) });
+})
+.listen(PORT, () => { console.log(`Listening on ${ PORT }`) });
