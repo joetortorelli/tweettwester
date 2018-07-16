@@ -73,11 +73,20 @@ express()
     });
   })
   .get('/logs', (req, res) => { 
-    fs.readFile('./logs.txt', "utf8", (err, data) => {
-        console.log(data);
-        console.log(err);
+    // fs.readFile('./logs.txt', "utf8", (err, data) => {
+    //     console.log(data);
+    //     console.log(err);
 
-        res.send('meep: ' + data);
-     });
+    //     res.send('meep: ' + data);
+    //  });
+    MongoClient.connect(process.env.url, function(err, db) { 
+        var dbo = db.db(process.env.db);
+        dbo.collection(process.env.tweetCollection).findOne({ "text" : "@UPS you guys are the greatest1234"},
+        function(err, res) {
+            console.log('wut am i');
+            console.log(res);
+            res.send(JSON.stringify(res));
+        });
+    });
   })
   .listen(PORT, () => { console.log(`Listening on ${ PORT }`) });
