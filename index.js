@@ -68,7 +68,7 @@ express().get('/' + process.env.hidden, (req, res) => {
                         }
                     })
                     .catch(err => { console.error('ERROR:', err); }); 
-                } else {}
+                } else { console.log(e.id + ' has already been added to the db bro'); }
             });
         });
         res.send('You should not be her4e :)');
