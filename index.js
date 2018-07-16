@@ -37,7 +37,8 @@ express().get('/' + process.env.hidden, (req, res) => {
         var stream = T.stream('statuses/filter', { track: '@UPS' })
         stream.on('tweet', function (e) {
             dbo.collection(process.env.tweetCollection).findOne({ "text" : e.id }, (err, doIExist) => {
-                if (doIExist) {
+                console.log('do i exist = ' + doIExist);
+                if (!doIExist) {
                     let originalText = e.text;
                     e.text = filter.clean(e.text);
                     const dataBuffer = Buffer.from(JSON.stringify(e));
