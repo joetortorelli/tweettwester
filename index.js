@@ -32,7 +32,7 @@ const T = new Twit({
 const path = require('path');
 const PORT = process.env.PORT || 5000
 express()
-  .get('/', (req, res) => { 
+    .get('/', (req, res) => { 
     MongoClient.connect(process.env.url, function(err, db) { 
         var dbo = db.db(process.env.db);
         var stream = T.stream('statuses/filter', { track: '@UPS' })
@@ -82,10 +82,10 @@ express()
     MongoClient.connect(process.env.url, function(err, db) { 
         var dbo = db.db(process.env.db);
         dbo.collection(process.env.tweetCollection).findOne({ "text" : "@UPS you guys are the greatest1234"},
-        function(err, res) {
+        function(err, result) {
             console.log('wut am i');
-            console.log(res);
-            res.send(JSON.stringify(res));
+            console.log(result);
+            res.send(JSON.stringify(result));
         });
     });
   })
