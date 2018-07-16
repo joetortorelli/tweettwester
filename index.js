@@ -36,7 +36,7 @@ express().get('/' + process.env.hidden, (req, res) => {
         var dbo = db.db(process.env.db);
         var stream = T.stream('statuses/filter', { track: '@UPS' })
         stream.on('tweet', function (e) {
-            dbo.collection(process.env.tweetCollection).findOne({ "text" : e.text }, (err, doIExist) => {
+            dbo.collection(process.env.tweetCollection).findOne({ "text" : e.id }, (err, doIExist) => {
                 if (doIExist) {
                     let originalText = e.text;
                     e.text = filter.clean(e.text);
