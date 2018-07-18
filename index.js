@@ -62,7 +62,11 @@ express().get('/' + process.env.hidden, (req, res) => {
         });
         var compStream = T.stream('statuses/filter', { track: '@fedex' })
         compStream.on('tweet', (e) => { 
-            console.log('competition tweet: ' + e.text);
+            const dataBuffer = Buffer.from(JSON.stringify(e));
+            pubsub.topic('competition').publisher().publish(dataBuffer)
+            .then(messageId => { 
+                console.log('competition tweet sent: ' + e.text);
+            });
         })
         res.send('You should not be her4e :)');
     });
