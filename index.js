@@ -37,7 +37,6 @@ express().get('/' + process.env.hidden, (req, res) => {
         var stream = T.stream('statuses/filter', { track: '@UPS' })
         stream.on('tweet', function (e) {
             dbo.collection(process.env.tweetCollection).findOne({ "text" : e.id }, (err, doIExist) => {
-                console.log('do i exist = ' + doIExist);
                 if (!doIExist) {
                     let originalText = e.text;
                     e.text = filter.clean(e.text);
@@ -46,24 +45,13 @@ express().get('/' + process.env.hidden, (req, res) => {
                     .then(messageId => { 
                         if (filter.isProfane(originalText)) { 
                             dbo.collection('threats').insertOne(e, function(err, res) {
-                                fs.appendFile('logs.txt', e.text + '\r\n', function (err) {
-                                    if (err) throw err;
-                                    console.log('Saved!');
-                                });
+                                console.log('inserted into threat db');
                                 dbo.collection(process.env.tweetCollection).insertOne(e, function(err, res) {
                                     console.log('Inserted ' + e.text + ' into database.');
-                                    fs.appendFile('logs.txt', e.text + '\r\n', function (err) {
-                                        if (err) throw err;
-                                        console.log('Saved!');
-                                    });
                                 });
                             });
                         } else { 
                             dbo.collection(process.env.tweetCollection).insertOne(e, function(err, res) {
-                                fs.appendFile('logs.txt', e.text + '\r\n', function (err) {
-                                    if (err) throw err;
-                                    console.log('Saved!');
-                                });
                                 console.log('Inserted ' + e.text + ' into database.');
                             });
                         }
@@ -72,24 +60,11 @@ express().get('/' + process.env.hidden, (req, res) => {
                 } else { console.log(e.id + ' has already been added to the db bro'); }
             });
         });
+        var compStream = T.stream('statuses/filter', { track: '@fedex' })
+        compStream.on('tweet', (e) => { 
+            console.log('competition tweet: ' + e.text);
+        })
         res.send('You should not be her4e :)');
-    });
-})
-.get('/logs', (req, res) => { 
-    // fs.readFile('./logs.txt', "utf8", (err, data) => {
-    //     console.log(data);
-    //     console.log(err);
-
-    //     res.send('meep: ' + data);
-    //  });
-    MongoClient.connect(process.env.url, function(err, db) { 
-        var dbo = db.db(process.env.db);
-        dbo.collection(process.env.tweetCollection).findOne({ "text" : "@UPS you guys are the greatest1234"},
-        function(err, result) {
-            console.log('wut am i');
-            console.log(result);
-            res.send(JSON.stringify(result));
-        });
     });
 })
 .listen(PORT, () => { console.log(`Listening on ${ PORT }`) });
