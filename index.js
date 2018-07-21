@@ -33,7 +33,7 @@ const PORT = process.env.PORT || 5000
 express().get('/' + process.env.hidden, (req, res) => { 
     MongoClient.connect(process.env.url, function(err, db) { 
         var dbo = db.db(process.env.db);
-        var stream = T.stream('statuses/filter', { track: '@UPS' })
+        var stream = T.stream('statuses/filter', { track: process.env.handlesToCheck })
         stream.on('tweet', function (e) {
             dbo.collection(process.env.tweetCollection).findOne({ "text" : e.id }, (err, doIExist) => {
                 if (!doIExist) {
