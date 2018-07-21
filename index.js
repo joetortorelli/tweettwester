@@ -74,7 +74,7 @@ express().get('/' + process.env.hidden, (req, res) => {
 })
 .get('/updateListener', (req, res) => { 
     let arr = new Array();
-    var myJson = { key: req.body.arr };
+    // var myJson = { key: req.body.arr };
     // call to Heroku Platform API
     heroku.post('https://api.heroku.com/apps/tweettwester/config-vars', {body: {"handlesToCheck": "@UPS","AnotherTest": "qux"}}).then(app => {
         console.log('we gud?');
