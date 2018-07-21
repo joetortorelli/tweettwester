@@ -76,11 +76,10 @@ express().get('/' + process.env.hidden, (req, res) => {
     console.log('test3');
     var data = "";
     req.on('data', function(chunk){ data += chunk})
-    req.on('end', function(){
-        req.rawBody = data;
-        req.jsonBody = JSON.parse(data);
-        next();
-    })
+    // req.on('end', function(){
+    //     req.rawBody = data;
+    //     req.jsonBody = JSON.parse(data);
+    // })
     let string = "@UPS, @FEDEX, @DHL";
     console.log(data);
     heroku.patch('/apps/tweettwester/config-vars', { body: { handlesToCheck: string}}).then(app => {
