@@ -76,9 +76,15 @@ express().get('/' + process.env.hidden, (req, res) => {
     let arr = new Array();
     // var myJson = { key: req.body.arr };
     // call to Heroku Platform API
-    heroku.post('https://api.heroku.com/apps/tweettwester/config-vars', {body: {"handlesToCheck": "@UPS","AnotherTest": "qux"}}).then(app => {
-        console.log('we gud?');
+    console.log('test');
+    heroku.get('/apps').then(apps => {
+        // do something with apps
+        console.log('is this gud: ' + apps);
         res.render('we gud?');
-    })
+
+      })
+    // heroku.post('https://api.heroku.com/apps/tweettwester/config-vars', {body: {"handlesToCheck": "@UPS","AnotherTest": "qux"}}).then(app => {
+    //     console.log('we gud?');
+    // })
 })
 .listen(PORT, () => { console.log(`Listening on ${ PORT }`) });
