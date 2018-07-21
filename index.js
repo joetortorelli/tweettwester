@@ -80,9 +80,8 @@ express().get('/' + process.env.hidden, (req, res) => {
     heroku.get('/apps').then(apps => {
         // do something with apps
         console.log('is this gud: ' + JSON.stringify(apps));
-
+      res.send('we gud?');
       })
-      res.render('we gud?');
     // heroku.post('https://api.heroku.com/apps/tweettwester/config-vars', {body: {"handlesToCheck": "@UPS","AnotherTest": "qux"}}).then(app => {
     //     console.log('we gud?');
     // })
