@@ -72,7 +72,7 @@ express().get('/' + process.env.hidden, (req, res) => {
         res.send('You should not be her4e :)');
     });
 })
-.post('/updateListener', (req, res) => { 
+.get('/updateListener', (req, res) => { 
     let arr = new Array();
     var myJson = { key: req.body.arr };
     // call to Heroku Platform API
