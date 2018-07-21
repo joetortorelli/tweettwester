@@ -74,7 +74,9 @@ express().get('/' + process.env.hidden, (req, res) => {
 })
 .post('/updateListener', (req, res) => { 
     console.log('test2');
-    heroku.patch('/apps/tweettwester/config-vars', { body: { handlesToCheck: JSON.stringify(req.body)}}).then(app => {
+    let jsons = JSON.stringify(req.body);
+    console.log(jsons);
+    heroku.patch('/apps/tweettwester/config-vars', { body: { handlesToCheck: jsons}}).then(app => {
         console.log('we gud?');
     })
     res.send('we gud2?');
