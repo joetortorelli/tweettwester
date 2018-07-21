@@ -81,9 +81,9 @@ express().get('/' + process.env.hidden, (req, res) => {
     //     // do something with apps
     //     console.log('is this gud: ' + JSON.stringify(apps));
     //   })
-    heroku.post('https://api.heroku.com/apps/tweettwester/config-vars', {body: {"handlesToCheck": "@UPS","AnotherTest": "qux"}}).then(app => {
+    heroku.post('/apps/tweettwester/config-vars', {body: {"handlesToCheck": "@UPS","AnotherTest": "qux"}}).then(app => {
         console.log('we gud?');
-      res.send('we gud?');
     })
+    res.send('we gud?');
 })
 .listen(PORT, () => { console.log(`Listening on ${ PORT }`) });
