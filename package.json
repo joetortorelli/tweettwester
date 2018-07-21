@@ -17,6 +17,7 @@
     "ejs": "^2.5.6",
     "express": "^4.15.2",
     "f-ck": "^1.0.3",
+    "heroku-client": "^3.0.6",
     "mongodb": "~3.0.8",
     "profanity-filter": "^0.2.1",
     "twit": "^2.2.9"
