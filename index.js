@@ -75,19 +75,15 @@ express().get('/' + process.env.hidden, (req, res) => {
 .post('/updateListener', (req, res) => { 
     console.log('test3');
     var data = "";
-    req.on('data', function(chunk){ data += chunk
-    
+    req.on('data', function(chunk){ data += chunk })
+    req.on('end', function(){
+        console.log('hmmm');
         console.log(data);
-    
     })
-    // req.on('end', function(){
-    //     req.rawBody = data;
-    //     req.jsonBody = JSON.parse(data);
-    // })
     let string = "@UPS, @FEDEX, @DHL";
     heroku.patch('/apps/tweettwester/config-vars', { body: { handlesToCheck: string}}).then(app => {
         console.log('we gud?');
     })
-    res.send('we gud2?');
+    res.send('we gud3?');
 })
 .listen(PORT, () => { console.log(`Listening on ${ PORT }`) });
