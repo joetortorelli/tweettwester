@@ -76,12 +76,12 @@ express().get('/' + process.env.hidden, (req, res) => {
     let arr = new Array();
     // var myJson = { key: req.body.arr };
     // call to Heroku Platform API
-    console.log('test');
+    console.log('test2');
     // heroku.get('/apps').then(apps => {
     //     // do something with apps
     //     console.log('is this gud: ' + JSON.stringify(apps));
     //   })
-    heroku.post('/apps/tweettwester/config-vars', {body: {"handlesToCheck": "@UPS","AnotherTest": "qux"}}).then(app => {
+    heroku.patch('/apps/tweettwester/config-vars', {body: { handlesToCheck: "@UPS", AnotherTest: "qux"}}).then(app => {
         console.log('we gud?');
     })
     res.send('we gud?');
