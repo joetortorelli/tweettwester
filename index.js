@@ -2,8 +2,6 @@ const express = require('express');
 var fs = require("fs");
 const MongoClient = require('mongodb').MongoClient;
 const PubSub = require('@google-cloud/pubsub');
-const Heroku = require('heroku-client')
-const heroku = new Heroku({ token: process.env.HEROKU_API_TOKEN })
 const pubsub = new PubSub({ 
   projectId: process.env.project_id,
   credentials: {
@@ -71,16 +69,5 @@ express().get('/' + process.env.hidden, (req, res) => {
         })
         res.send('You should not be her4e :)');
     });
-})
-.post('/updateListener', (req, res) => { 
-    console.log('test4');
-    var data = "";
-    req.on('data', function(chunk){ data += chunk })
-    req.on('end', function(){
-        heroku.patch('/apps/tweettwester/config-vars', { body: { handlesToCheck: data }}).then(app => {
-            console.log('we gud?');
-        })
-        res.send('we gud4?');
-    })
 })
 .listen(PORT, () => { console.log(`Listening on ${ PORT }`) });
