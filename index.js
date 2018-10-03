@@ -50,7 +50,8 @@ express().get('/' + process.env.hidden, (req, res) => {
                                 });
                             });
                         } else { 
-                            e.time = Date.now();
+                            e.time = new Date(Date.now());
+                            console.log(JSON.stringify(e));
                             dbo.collection(process.env.tweetCollection).insertOne(e, function(err, res) {
                                 console.log('Inserted ' + e.text + ' into database.');
                             });
