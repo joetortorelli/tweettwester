@@ -39,6 +39,7 @@ express().get('/' + process.env.hidden, (req, res) => {
                 if (!doIExist) {
                     let originalText = e.text;
                     e.text = filter.clean(e.text);
+                    e.time = new Date(Date.now());
                     const dataBuffer = Buffer.from(JSON.stringify(e));
                     pubsub.topic('hackathon').publisher().publish(dataBuffer)
                     .then(messageId => { 
@@ -50,9 +51,9 @@ express().get('/' + process.env.hidden, (req, res) => {
                                 });
                             });
                         } else { 
-                            e.time = new Date(Date.now());
                             console.log(JSON.stringify(e));
                             dbo.collection(process.env.tweetCollection).insertOne(e, function(err, res) {
+                                console.log('e.time');
                                 console.log('Inserted ' + e.text + ' into database.');
                             });
                         }
