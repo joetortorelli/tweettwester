@@ -41,7 +41,7 @@ express().get('/' + process.env.hidden, (req, res) => {
                     e.text = filter.clean(e.text);
                     e.time = new Date(Date.now());
                     const dataBuffer = Buffer.from(JSON.stringify(e));
-                    pubsub.topic('storm').publisher().publish(dataBuffer)
+                    pubsub.topic('stormPubSub').publisher().publish(dataBuffer)
                     .then(messageId => { 
                         if (filter.isProfane(originalText)) { 
                             dbo.collection('threats').insertOne(e, function(err, res) {
