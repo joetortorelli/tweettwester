@@ -31,6 +31,7 @@ const T = new Twit({
 const path = require('path');
 const PORT = process.env.PORT || 5000
 express().get('/' + process.env.hidden, (req, res) => { 
+    console.log('CHANGE KNOX');
     MongoClient.connect(process.env.url, function(err, db) { 
         var dbo = db.db(process.env.db);
         var stream = T.stream('statuses/filter', { track: process.env.handlesToCheck })
@@ -41,9 +42,12 @@ express().get('/' + process.env.hidden, (req, res) => {
                     e.text = filter.clean(e.text);
                     e.time = new Date(Date.now());
                     const dataBuffer = Buffer.from(JSON.stringify(e));
+                    console.log('AM I IN HERE 2')
                     pubsub.topic('hackathon').publisher().publish(dataBuffer)
                     .then(messageId => { 
+                        console.log('AM I IN HERE1')
                         if (filter.isProfane(originalText)) { 
+                            console.log('AM I IN HERE 3')
                             dbo.collection('threats').insertOne(e, function(err, res) {
                                 console.log('inserted into threat db');
                                 dbo.collection(process.env.tweetCollection).insertOne(e, function(err, res) {
@@ -51,6 +55,7 @@ express().get('/' + process.env.hidden, (req, res) => {
                                 });
                             });
                         } else { 
+                            console.log('AM I IN HERE 4');
                             console.log(JSON.stringify(e));
                             dbo.collection(process.env.tweetCollection).insertOne(e, function(err, res) {
                                 console.log('e.time');
