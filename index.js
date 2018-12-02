@@ -43,7 +43,7 @@ express().get('/' + process.env.hidden, (req, res) => {
                     e.time = new Date(Date.now());
                     const dataBuffer = Buffer.from(JSON.stringify(e));
                     console.log('AM I IN HERE 2')
-                    pubsub.topic('hackathon').publisher().publish(dataBuffer)
+                    pubsub.topic('storm').publisher().publish(dataBuffer)
                     .then(messageId => { 
                         console.log('AM I IN HERE1')
                         if (filter.isProfane(originalText)) { 
@@ -63,7 +63,7 @@ express().get('/' + process.env.hidden, (req, res) => {
                             });
                         }
                     })
-                    .catch(err => { console.error('ERROR:', err); }); 
+                    .catch(err => { console.log('ERROR45'); console.error('ERROR:', err); }); 
                 } else { console.log(e.id + ' has already been added to the db bro'); }
             });
         });
