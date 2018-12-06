@@ -35,29 +35,32 @@ express().get('/' + process.env.hidden, (req, res) => {
         var dbo = db.db(process.env.db);
         var stream = T.stream('statuses/filter', { track: process.env.handlesToCheck })
         stream.on('tweet', function (e) {
-            dbo.collection(process.env.tweetCollection).findOne({ "text" : e.id }, (err, doIExist) => {
-                if (!doIExist) {
-                    let originalText = e.text;
-                    e.text = filter.clean(e.text);
-                    e.time = new Date(Date.now());
-                    const dataBuffer = Buffer.from(JSON.stringify(e));
-                    pubsub.topic('stormPubSub').publisher().publish(dataBuffer)
-                    .then(messageId => { 
-                        if (filter.isProfane(originalText)) { 
-                            dbo.collection('threats').insertOne(e, function(err, res) {
-                                console.log('e: ' + JSON.stringify(e));
+            if (e.text.substring(0,4) == "RT @") { console.log('this is a retweet..we dont need that'); }
+            else {
+                console.log('this is not a retweet;');
+                dbo.collection(process.env.tweetCollection).findOne({ "id" : e.id }, (err, doIExist) => {
+                    if (!doIExist) {
+                        console.log('this tweet does not exist, insert it.')
+                        let originalText = e.text;
+                        e.text = filter.clean(e.text);
+                        e.time = new Date(Date.now());
+                        const dataBuffer = Buffer.from(JSON.stringify(e));
+                        pubsub.topic('stormPubSub').publisher().publish(dataBuffer)
+                        .then(messageId => { 
+                            if (filter.isProfane(originalText)) { 
+                                dbo.collection('threats').insertOne(e, function(err, res) {
+                                    dbo.collection(process.env.tweetCollection).insertOne(e, function(err, res) {
+                                    });
+                                });
+                            } else { 
                                 dbo.collection(process.env.tweetCollection).insertOne(e, function(err, res) {
                                 });
-                            });
-                        } else { 
-                            console.log('e: ' + JSON.stringify(e));
-                            dbo.collection(process.env.tweetCollection).insertOne(e, function(err, res) {
-                            });
-                        }
-                    })
-                    .catch(err => { console.log('ERROR45'); console.error('ERROR:', err); }); 
-                } else { console.log(e.id + ' has already been added to the db bro'); }
-            });
+                            }
+                        })
+                        .catch(err => { console.log('ERROR45'); console.error('ERROR:', err); }); 
+                    } else { console.log(e.id + ' has already been added to the db bro DO NOT insert'); }
+                });
+            }
         });
         var compStream = T.stream('statuses/filter', { track: '@fedex' })
         compStream.on('tweet', (e) => { 
@@ -66,7 +69,7 @@ express().get('/' + process.env.hidden, (req, res) => {
             .then(messageId => { 
             });
         })
-        res.send('You should not be her4e :)');
+        res.send(':)');
     });
 })
 .listen(PORT, () => { console.log(`Listening on ${ PORT }`) });
