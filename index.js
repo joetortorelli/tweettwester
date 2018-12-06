@@ -35,6 +35,7 @@ express().get('/' + process.env.hidden, (req, res) => {
         var dbo = db.db(process.env.db);
         var stream = T.stream('statuses/filter', { track: process.env.handlesToCheck })
         stream.on('tweet', function (e) {
+            console.log('tweet: ' + e.text);
             if (e.text.substring(0,4) == "RT @") { console.log('this is a retweet..we dont need that'); }
             else {
                 console.log('this is not a retweet;');
